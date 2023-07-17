@@ -12,9 +12,30 @@ export default function EventModal() {
   const [location, setLocation] = useState("");
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
 
-  const [allDay, setAllDay] = useState(true);
+  const [allDay, setAllDay] = useState(false);
   const [startEventDate, setStartEventDate] = useState(dayjs().toDate());
   const [endEventDate, setEndEventDate] = useState(dayjs().toDate());
+
+
+  const datePicker = (type:string) => {
+    if(allDay) {
+        return  <DatePicker
+        className=" border-b-2 border-gray-200  focus:outline-none focus:ring-0 focus:border-blue-500 "
+        selected={ type==="start" ? startEventDate : endEventDate}
+        onChange={(date: Date) => type === "start" ? setStartEventDate(date) : setEndEventDate(date)}
+        dateFormat={"yyyy-MM-dd"}
+      />
+    } else {
+        return  <DatePicker
+        className=" border-b-2 border-gray-200  focus:outline-none focus:ring-0 focus:border-blue-500 "
+        selected={type==="start" ? startEventDate : endEventDate}
+        showTimeSelect
+        onChange={(date: Date) => type === "start" ? setStartEventDate(date) : setEndEventDate(date)}
+        dateFormat={"yyyy-MM-dd HH:mm"}
+      />
+    }
+  };
+
   return (
     <div className="h-screen w-screen fixed left-0 top-0 flex justify-center items-center ">
       <form className="bg-white rounded-lg shadow-2xl w-1/3">
@@ -47,19 +68,10 @@ export default function EventModal() {
               <span className="material-icons-outlined text-gray-400 cursor-pointer mr-2">
                 schedule
               </span>
-              <DatePicker
-                className=" border-b-2 border-gray-200  focus:outline-none focus:ring-0 focus:border-blue-500 mr-2"
-                selected={startEventDate}
-                onChange={(date: Date) => setStartEventDate(date)}
-                dateFormat={"yyyy-MM-dd"}
-              />
-              <span className="">-</span>
-              <DatePicker
-                className=" border-b-2 border-gray-200  focus:outline-none focus:ring-0 focus:border-blue-500 ml-2"
-                selected={endEventDate}
-                onChange={(date: Date) => setEndEventDate(date)}
-                dateFormat={"yyyy-MM-dd"}
-              />
+              
+             {datePicker("start")}
+              <span className="mr-2 ml-2">-</span>
+            {datePicker("end")}
             </div>
             <div className="flex items-center ml-8">
               <input
