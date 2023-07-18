@@ -1,15 +1,18 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { GlobalContext } from "../context/GlobalContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
 import { categoryClasses, getCategoryClassColr } from "../utils/Categories";
+import { ActionType } from "../utils/EventUtil";
+
 
 export default function EventModal() {
-  const { setShowEventModal } = useContext(GlobalContext);
+  const { setShowEventModal , dispatchSavedEvent } = useContext(GlobalContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [repeatType, setRepeatType] = useState("NO_REPEAT");
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
 
   const [allDay, setAllDay] = useState(false);
@@ -35,6 +38,27 @@ export default function EventModal() {
       />
     }
   };
+
+  function handleSaveEvent(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const event = {
+      id: crypto.randomUUID().toString(),
+      title: title,
+      description: description,
+      location: location,
+      category: selectedCategoryIndex.toString(),
+      isAllDay: allDay,
+      alert: false,
+      repeat: repeatType,
+      isRepeat: repeatType !== "NO_REPEAT",
+      startTime: startEventDate.getTime(),
+      endTime: endEventDate.getTime(),
+      createdAt: Date.now(),
+      updatedAt:  Date.now()
+    };
+    dispatchSavedEvent({type:ActionType.ADD,payload:event})
+    setShowEventModal(false);
+  }
 
   return (
     <div className="h-screen w-screen fixed left-0 top-0 flex justify-center items-center ">
@@ -85,15 +109,17 @@ export default function EventModal() {
                 All Day
               </label>
 
-              <select className="ml-4 border border-gray-300 text-gray-900 text-sm rounded-lg">
-                <option value="0" selected>
+              <select value={repeatType} onChange={e => setRepeatType(e.target.value)} className="ml-4 border border-gray-300 text-gray-900 text-sm rounded-lg">
+                <option value="NO_REPEAT">
                   Does not repeat
                 </option>
-                <option value="1">Daily</option>
-                <option value="2">Weekly</option>
-                <option value="3">Biweekly</option>
-                <option value="4">Work day</option>
+                <option value="DAILY">Daily</option>
+                <option value="WEEKLY">Weekly</option>
+                <option value="BIWEEKLY">Biweekly</option>
+                <option value="WORKDAY">Work day</option>
               </select>
+          
+
             </div>
             <div className="flex items-center ml-8">
               <span className="material-icons-outlined text-gray-400 cursor-pointer mr-2">
@@ -154,7 +180,7 @@ export default function EventModal() {
           </div>
         </div>
         <footer className="flex justify-end  border-t p-3 mt-5">
-            <button type="submit" className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded text-white ">
+            <button type="submit" onClick={handleSaveEvent} className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded text-white ">
                                 Save
             </button>
         </footer>
