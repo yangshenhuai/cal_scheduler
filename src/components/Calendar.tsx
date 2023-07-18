@@ -18,7 +18,7 @@ export default function Calendar() {
                     <>
                     {row.map((col, colIndex) => {
                         return (
-                            <Day date={col} weekIdx={rowIndex}/>
+                            <Day key={colIndex} date={col} weekIdx={rowIndex}/>
                         )
                     })}
                     </>

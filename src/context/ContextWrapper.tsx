@@ -46,7 +46,7 @@ export default function ContextWrapper({children}:any) {
     const [date,setDate] = useState(dayjs())
     const [showEventModal,setShowEventModal] = useState(false)
     return (
-        <GlobalContext.Provider value={{date,setDate,showEventModal,setShowEventModal,dispatchSavedEvent}}>
+        <GlobalContext.Provider value={{date,setDate,showEventModal,setShowEventModal,savedEvents, dispatchSavedEvent}}>
             {children}
         </GlobalContext.Provider>
     )
